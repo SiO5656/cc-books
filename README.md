@@ -2,7 +2,6 @@
 
 AIとの1日のコーディングセッションを、ページをめくれる「本」にして振り返れるツール。
 
-https://github.com/user-attachments/assets/placeholder-demo.gif
 
 ## これは何？
 
