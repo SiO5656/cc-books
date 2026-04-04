@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BOOK_TITLE}}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Shippori+Mincho:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0f0f1a;
+    background-image:
+      radial-gradient(ellipse at 20% 40%, rgba(217, 119, 47, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 60%, rgba(30, 60, 114, 0.2) 0%, transparent 50%);
+    font-family: 'Noto Serif JP', serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .scene {
+    perspective: 2400px;
+    perspective-origin: 50% 50%;
+    margin-top: 8px;
+  }
+
+  .book {
+    position: relative;
+    width: 1020px;
+    height: 680px;
+    transform-style: preserve-3d;
+    transform: rotateX(3deg);
+  }
+
+  .book::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: 6%;
+    width: 88%;
+    height: 56px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.55) 0%, transparent 70%);
+    filter: blur(12px);
+  }
+
+  .page {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    cursor: grab;
+    z-index: 1;
+  }
+
+  .page.dragging {
+    transition: none;
+    cursor: grabbing;
+  }
+
+  .page.flipped {
+    transform: rotateY(-180deg);
+    z-index: 0;
+  }
+
+  .page.snap-back {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .page.snap-complete {
+    transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .page .front,
+  .page .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 0 10px 10px 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 44px 40px;
+  }
+
+  .page .front {
+    background: linear-gradient(135deg, #fefcf7 0%, #f5f0e8 100%);
+    border-left: 1px solid #e0d6c2;
+    box-shadow: inset -10px 0 28px rgba(0,0,0,0.06), 3px 0 10px rgba(0,0,0,0.1);
+  }
+
+  .page .back {
+    background: linear-gradient(225deg, #fefcf7 0%, #f5f0e8 100%);
+    transform: rotateY(180deg);
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #e0d6c2;
+    border-left: none;
+    box-shadow: inset 10px 0 28px rgba(0,0,0,0.06), -3px 0 10px rgba(0,0,0,0.1);
+  }
+
+  .left-page {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: linear-gradient(225deg, #fefcf7 0%, #f5f0e8 100%);
+    border-radius: 10px 0 0 10px;
+    border-right: 1px solid #e0d6c2;
+    box-shadow: inset 10px 0 28px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    padding: 44px 40px;
+    overflow: hidden;
+  }
+
+  .page-number {
+    font-size: 11px;
+    color: #b0a48f;
+    text-align: right;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+  }
+
+  .left-page .page-number { text-align: left; }
+
+  .chapter-label {
+    font-size: 11px;
+    color: #D97B2F;
+    letter-spacing: 6px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .page-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c2416;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .page-body {
+    font-size: 15px;
+    line-height: 2;
+    color: #3a3328;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .page-body p { margin-bottom: 14px; }
+
+  .page-body .dropcap::first-letter {
+    font-size: 52px;
+    float: left;
+    line-height: 0.8;
+    margin: 6px 12px 0 0;
+    color: #D97B2F;
+    font-weight: 700;
+  }
+
+  .divider {
+    text-align: center;
+    margin: 18px 0;
+    color: #D9A76F;
+    font-size: 16px;
+    letter-spacing: 8px;
+  }
+
+  .quote {
+    border-left: 3px solid #D97B2F;
+    padding: 14px 22px;
+    margin: 16px 0;
+    color: #5a4e3e;
+    font-size: 14px;
+    line-height: 1.9;
+    background: rgba(217, 123, 47, 0.06);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .code-block {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .code-block .code-label {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 10px;
+    color: #6c7086;
+    letter-spacing: 1px;
+  }
+
+  .code-block .comment { color: #6c7086; }
+  .code-block .keyword { color: #cba6f7; }
+  .code-block .string { color: #a6e3a1; }
+  .code-block .property { color: #89b4fa; }
+
+  .cover-front {
+    background: linear-gradient(145deg, #1a1520 0%, #2a1f30 30%, #1e1828 70%, #0f0d14 100%);
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-front::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(217, 123, 47, 0.3);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  .cover-front::after {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(217, 123, 47, 0.12);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .cover-front .cover-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  .cover-front .cover-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 34px;
+    color: #D9A76F;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    font-weight: 700;
+  }
+
+  .cover-front .cover-subtitle {
+    font-size: 14px;
+    color: #b89868;
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 28px;
+  }
+
+  .cover-front .cover-ornament {
+    color: #D97B2F;
+    font-size: 20px;
+    letter-spacing: 12px;
+    margin: 14px 0;
+    opacity: 0.5;
+  }
+
+  .cover-front .cover-author {
+    font-size: 15px;
+    color: #c8a878;
+    letter-spacing: 6px;
+    margin-top: 20px;
+  }
+
+  .cover-left {
+    background: linear-gradient(to right, #1e1828, #1a1520);
+    border-radius: 10px 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cover-left .spine-text {
+    writing-mode: vertical-rl;
+    color: #6a5a48;
+    font-size: 12px;
+    letter-spacing: 8px;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 24px;
+  }
+
+  .nav button {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #d0c8b8;
+    padding: 12px 30px;
+    border-radius: 40px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .nav button:hover {
+    background: rgba(217, 123, 47, 0.15);
+    color: #fff;
+    border-color: rgba(217, 123, 47, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+
+  .nav button:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .page-indicator {
+    color: #887868;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .title-bar {
+    color: #D9A76F;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 15px;
+    letter-spacing: 6px;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .flip-hint {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    color: rgba(217, 123, 47, 0.5);
+    font-size: 12px;
+    animation: hintPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.3; transform: translateX(0); }
+    50% { opacity: 0.8; transform: translateX(-6px); }
+  }
+
+  .page:not(.flipped):hover .front {
+    box-shadow: inset -14px 0 36px rgba(0,0,0,0.1), 5px 0 14px rgba(0,0,0,0.15);
+  }
+
+  .book::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    transform: translateX(-50%);
+    background: linear-gradient(to right,
+      rgba(0,0,0,0.15),
+      rgba(0,0,0,0.35),
+      rgba(0,0,0,0.15)
+    );
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .tip-box {
+    background: linear-gradient(135deg, rgba(217,123,47,0.06), rgba(217,167,111,0.06));
+    border: 1px solid rgba(217,123,47,0.15);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+
+  .tip-box .tip-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #D97B2F;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .tip-box ul {
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #5a4e3e;
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+  }
+
+  .comparison .col {
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .comparison .col.bad {
+    background: rgba(180, 60, 60, 0.06);
+    border: 1px solid rgba(180, 60, 60, 0.15);
+  }
+
+  .comparison .col.good {
+    background: rgba(60, 160, 80, 0.06);
+    border: 1px solid rgba(60, 160, 80, 0.15);
+  }
+
+  .comparison .col-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .comparison .bad .col-label { color: #b43c3c; }
+  .comparison .good .col-label { color: #3ca050; }
+
+  .tag {
+    display: inline-block;
+    background: rgba(217,123,47,0.1);
+    color: #D97B2F;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  strong { color: #2c2416; }
+</style>
+</head>
+<body>
+
+<div class="title-bar">{{BOOK_TITLE}}</div>
+
+<div class="scene">
+  <div class="book" id="book">
+    <div class="left-page" id="leftPage"></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn" onclick="prevPage()" disabled>&#9664; 前へ</button>
+  <span class="page-indicator" id="indicator">表紙</span>
+  <button id="nextBtn" onclick="nextPage()">次へ &#9654;</button>
+</div>
+
+<script>
+const pages = [
+  // {{PAGES_DATA}}
+  {
+    front: `
+      <div class="cover-front" style="position:absolute;inset:0;padding:50px;border-radius:0 10px 10px 0;">
+        <div class="cover-ornament">&#9671; &#9671; &#9671;</div>
+        <div class="cover-icon"><svg width="56" height="56" viewBox="0 0 56 56" fill="none"><rect x="4" y="12" width="48" height="36" rx="4" stroke="#D9A76F" stroke-width="1.5" fill="none"/><text x="28" y="35" text-anchor="middle" fill="#D9A76F" font-family="monospace" font-size="14" font-weight="bold">&gt;_</text><line x1="12" y1="48" x2="44" y2="48" stroke="#D9A76F" stroke-width="1" opacity="0.4"/></svg></div>
+        <div class="cover-title">Claude Code<br>実践ガイド</div>
+        <div class="cover-subtitle">── 今日から変わる、AIとの開発体験 ──</div>
+        <div style="width:80px;height:1px;background:linear-gradient(to right,transparent,#D97B2F,transparent);margin:24px 0;"></div>
+        <div class="cover-author">Your Name</div>
+        <div style="font-size:11px;color:#8a7050;margin-top:12px;letter-spacing:3px;">FlipBook UI</div>
+        <div class="cover-ornament">&#9671; &#9671; &#9671;</div>
+      </div>
+    `,
+    back: `
+      <div class="page-number">ii</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <p style="color:#8a7a68;font-size:14px;letter-spacing:3px;margin-bottom:16px;text-align:center;">はじめに</p>
+        <div class="divider" style="margin:10px 0;">─</div>
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">Claude Codeを毎日使い倒して半年。正直、もう手放せません。</p>
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">コードを書く、ファイルを整理する、記事を執筆する、請求書を作る──僕の仕事の大半がClaude Codeのターミナルの中で完結するようになりました。</p>
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">ただ、最初からうまく使えたわけじゃない。<strong>「こう設定すればよかったのか」「この機能もっと早く知りたかった」</strong>の連続でした。</p>
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">この本は、僕が試行錯誤の中で見つけた<strong>「Claude Codeを本当に使いこなすためのポイント」</strong>をまとめたものです。</p>
+      </div>
+    `,
+    leftContent: `
+      <div class="cover-left" style="width:calc(100% + 80px);height:calc(100% + 88px);margin:-44px -40px;display:flex;align-items:center;justify-content:center;">
+        <div class="spine-text">{{BOOK_TITLE}}</div>
+      </div>
+    `
+  },
+
+  // 第1章: CLAUDE.mdがすべて
+  {
+    front: `
+      <div class="page-number">1</div>
+      <div class="chapter-label">第一章</div>
+      <div class="page-title">CLAUDE.mdが<br>すべてを決める</div>
+      <div class="divider">&#9671; &#9671; &#9671;</div>
+      <div class="page-body">
+        <p class="dropcap">Claude Codeで最も大事なファイルは何か？ コードでもテストでもない。<strong>CLAUDE.md</strong>です。</p>
+        <p>CLAUDE.mdは、Claudeに「お前はこういうプロジェクトで、こういうルールで、こういう風に動いてくれ」と伝えるための設定ファイル。これがないClaude Codeは、地図を持たないタクシーと同じです。</p>
+        <p>僕のCLAUDE.mdには、会社の情報、プロジェクト構成、チームメンバー、命名規則、外部送信の承認ルールまで全部書いてあります。おかげでClaude Codeは<strong>「うちの会社のことを知っている社員」</strong>のように動いてくれる。</p>
+      </div>
+      <div class="flip-hint">ドラッグでめくる &#10148;</div>
+    `,
+    back: `
+      <div class="page-number">2</div>
+      <div class="page-body">
+        <p>CLAUDE.mdに書くべきことは、大きく3つ。</p>
+        <div class="tip-box">
+          <div class="tip-title">CLAUDE.md 3つの柱</div>
+          <ul>
+            <li><strong>コンテキスト</strong> ── プロジェクトの概要、ディレクトリ構成、使用技術</li>
+            <li><strong>ルール</strong> ── コーディング規約、セキュリティ要件、禁止事項</li>
+            <li><strong>ワークフロー</strong> ── ビルド手順、デプロイ方法、テストの走らせ方</li>
+          </ul>
+        </div>
+        <p>ポイントは<strong>「Claudeが迷うであろう場面」を先回りして書く</strong>こと。</p>
+        <div class="code-block">
+          <div class="code-label">CLAUDE.md</div>
+<span class="comment"># 外部送信の承認ルール</span>
+<span class="keyword">メール・SNS投稿・Slack送信は</span>
+<span class="keyword">必ず内容を表示して承認を得ること。</span>
+<span class="keyword">「OK」「送って」で実行。</span>
+<span class="keyword">「お願い」「進めて」は承認とみなさない。</span>
+        </div>
+        <p>こういう<strong>「やらかし防止」</strong>のルールこそ、CLAUDE.mdの真価。何度か事故を起こして学びました。</p>
+      </div>
+    `,
+    leftContent: `
+      <div class="page-number">ii</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">Claude Codeを毎日使い倒して半年。正直、もう手放せません。</p>
+        <p style="color:#4a4038;font-size:14.5px;line-height:2.1;">この本は、僕が試行錯誤の中で見つけた<strong>「Claude Codeを本当に使いこなすためのポイント」</strong>をまとめたものです。</p>
+      </div>
+    `
+  },
+
+  // 第2章: メモリシステム
+  {
+    front: `
+      <div class="page-number">3</div>
+      <div class="chapter-label">第二章</div>
+      <div class="page-title">メモリを制する者が<br>Claude Codeを制す</div>
+      <div class="divider">&#9671; &#9671; &#9671;</div>
+      <div class="page-body">
+        <p class="dropcap">Claude Codeの最大の弱点は「忘れること」です。セッションが切れたら、前回の会話は消える。昨日あれだけ説明したのに、今日また同じことを聞いてくる。</p>
+        <p>この問題を解決するのが<strong>メモリシステム</strong>。僕はファイルベースのメモリを構築して、セッション間で知識を引き継いでいます。</p>
+        <div class="code-block">
+          <div class="code-label">構造</div>
+<span class="property">memory/</span>
+├── <span class="property">short-term/daily/</span>    <span class="comment"># 日次ログ（7日保持）</span>
+├── <span class="property">short-term/events/</span>   <span class="comment"># イベント（3日保持）</span>
+├── <span class="property">long-term/feedback/</span>  <span class="comment"># 教訓（永続）</span>
+├── <span class="property">long-term/facts/</span>     <span class="comment"># 事実情報</span>
+├── <span class="property">long-term/user/</span>      <span class="comment"># ユーザーの好み</span>
+└── <span class="property">long-term/project/</span>   <span class="comment"># プロジェクト情報</span>
+        </div>
+      </div>
+      <div class="flip-hint">ドラッグでめくる &#10148;</div>
+    `,
+    back: `
+      <div class="page-number">4</div>
+      <div class="page-body">
+        <p>中でも最重要は<strong>feedback/</strong>フォルダ。ここには「やらかしの教訓」が入っています。</p>
+        <div class="quote">「note記事を承認なしに公開してしまった」<br>→ 公開前は必ずAskUserQuestionで確認するルールを追加</div>
+        <div class="quote">「X投稿に研修の宣伝が入りすぎていた」<br>→ CLAUDE.mdのバイアスに引っ張られないよう明示ルール化</div>
+        <p>失敗するたびにfeedbackに記録する。すると次のセッションからは<strong>同じ失敗を二度としなくなる</strong>。人間の新入社員よりよっぽど学習が早い。</p>
+        <p>3日に1回「蒸留」プロセスを回して、短期メモリから長期メモリに重要情報を移行。古くなった情報は自動削除。これで<strong>メモリが太りすぎない</strong>ようにしています。</p>
+        <div class="tip-box">
+          <div class="tip-title">メモリ運用のコツ</div>
+          <ul>
+            <li>コードから読み取れる情報はメモリに入れない</li>
+            <li>feedbackは「なぜ」と「どう適用するか」をセットで書く</li>
+            <li>MEMORY.mdは200行以内に抑える（インデックスのみ）</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    leftContent: `
+      <div class="page-number">2</div>
+      <div class="page-body">
+        <p>ポイントは<strong>「Claudeが迷うであろう場面」を先回りして書く</strong>こと。</p>
+        <div class="code-block">
+          <div class="code-label">CLAUDE.md</div>
+<span class="comment"># 外部送信の承認ルール</span>
+<span class="keyword">メール・SNS投稿・Slack送信は</span>
+<span class="keyword">必ず内容を表示して承認を得ること。</span>
+        </div>
+        <p>こういう<strong>「やらかし防止」</strong>のルールこそ、CLAUDE.mdの真価。</p>
+      </div>
+    `
+  },
+
+  // 第3章: サブエージェント
+  {
+    front: `
+      <div class="page-number">5</div>
+      <div class="chapter-label">第三章</div>
+      <div class="page-title">サブエージェントで<br>「チーム」を作る</div>
+      <div class="divider">&#9671; &#9671; &#9671;</div>
+      <div class="page-body">
+        <p class="dropcap">Claude Code単体でも十分強力ですが、サブエージェントを使い始めると次元が変わります。1つのタスクを複数のエージェントに分担させて、<strong>並列で同時に走らせる</strong>。</p>
+        <p>たとえば僕がよく使うパターン：</p>
+        <div class="comparison">
+          <div class="col bad">
+            <div class="col-label">直列（遅い）</div>
+            セキュリティ確認<br>→ コードレビュー<br>→ テスト実行<br><strong>合計15分</strong>
+          </div>
+          <div class="col good">
+            <div class="col-label">並列（速い）</div>
+            セキュリティ確認 ┐<br>コードレビュー　 ├ 同時<br>テスト実行　　　 ┘<br><strong>合計5分</strong>
+          </div>
+        </div>
+        <p><strong>独立したタスクは必ず並列で回す。</strong>これだけで体感速度が3倍になります。</p>
+      </div>
+      <div class="flip-hint">ドラッグでめくる &#10148;</div>
+    `,
+    back: `
+      <div class="page-number">6</div>
+      <div class="page-body">
+        <p>僕が常用しているエージェント構成：</p>
+        <div class="code-block">
+<span class="property">planner</span>        <span class="comment"># 実装計画を立てる</span>
+<span class="property">code-reviewer</span>   <span class="comment"># コード書いたら即レビュー</span>
+<span class="property">security-reviewer</span> <span class="comment"># セキュリティチェック</span>
+<span class="property">tdd-guide</span>      <span class="comment"># テスト駆動開発のガイド</span>
+        </div>
+        <p>特にcode-reviewerは<strong>コードを書いた直後に自動で走る</strong>ようにしています。人間のレビュアーが見つけるような問題を、待ち時間ゼロで指摘してくれる。</p>
+        <div class="quote">大事なのは「エージェントに何を任せるか」の設計。漠然と「よろしく」じゃなく、役割・担当範囲・期待する成果物を明確にする。人間のチームマネジメントと全く同じです。</div>
+        <p>各エージェントの定義は <code>~/.claude/agents/</code> にMarkdownで書く。プロンプトエンジニアリングの腕の見せどころ。</p>
+      </div>
+    `,
+    leftContent: `
+      <div class="page-number">4</div>
+      <div class="page-body">
+        <p>失敗するたびにfeedbackに記録する。すると次のセッションからは<strong>同じ失敗を二度としなくなる</strong>。</p>
+        <p>3日に1回「蒸留」プロセスを回して、短期メモリから長期メモリに重要情報を移行。</p>
+        <div class="tip-box">
+          <div class="tip-title">メモリ運用のコツ</div>
+          <ul>
+            <li>コードから読み取れる情報はメモリに入れない</li>
+            <li>feedbackは「なぜ」をセットで書く</li>
+            <li>MEMORY.mdは200行以内に抑える</li>
+          </ul>
+        </div>
+      </div>
+    `
+  },
+
+  // 第4章: スキルとHooks
+  {
+    front: `
+      <div class="page-number">7</div>
+      <div class="chapter-label">第四章</div>
+      <div class="page-title">スキルとHooksで<br>「自分専用のCLI」を作る</div>
+      <div class="divider">&#9671; &#9671; &#9671;</div>
+      <div class="page-body">
+        <p class="dropcap">Claude Codeの真骨頂は<strong>カスタマイズ性</strong>にあります。スキル（Skills）を書けば、スラッシュコマンド一発で複雑なワークフローを起動できる。</p>
+        <p>僕が実際に使っているスキルの一部：</p>
+        <div class="code-block">
+<span class="string">/cross-post</span>   <span class="comment"># 1トピック→X,LinkedIn,FB,Threads,note一括投稿</span>
+<span class="string">/meeting-summary</span> <span class="comment"># tldv議事録→要約→Slack共有</span>
+<span class="string">/create-invoice</span> <span class="comment"># 請求書PDF生成→メール送信</span>
+<span class="string">/daily-buzz</span>   <span class="comment"># AIトレンド→バズポスト自動生成</span>
+<span class="string">/deep-research</span> <span class="comment"># 深掘りリサーチ→レポート生成</span>
+        </div>
+        <p>1つのスキルの裏側で、複数のMCPサーバーやAPIが連携して動く。<strong>ユーザーから見れば1コマンド</strong>。この体験がすごい。</p>
+      </div>
+      <div class="flip-hint">ドラッグでめくる &#10148;</div>
+    `,
+    back: `
+      <div class="page-number">8</div>
+      <div class="page-body">
+        <p>Hooksも強力。ツール実行の前後に自動で処理を挟める仕組みです。</p>
+        <div class="code-block">
+          <div class="code-label">settings.json</div>
+<span class="comment">// TypeScriptファイルを編集したら</span>
+<span class="comment">// 自動でtscとPrettierを走らせる</span>
+<span class="property">"PostToolUse"</span>: [{
+  <span class="property">"event"</span>: <span class="string">"Edit *.ts *.tsx"</span>,
+  <span class="property">"command"</span>: <span class="string">"npx tsc --noEmit && npx prettier --write $FILE"</span>
+}]
+        </div>
+        <p>つまり<strong>「書いた瞬間に型チェックとフォーマットが走る」</strong>環境が自動で整う。</p>
+        <div class="tip-box">
+          <div class="tip-title">おすすめHook設定</div>
+          <ul>
+            <li><strong>PostToolUse</strong>: ファイル編集後にlint/format自動実行</li>
+            <li><strong>PreToolUse</strong>: git push前にレビュー画面を開く</li>
+            <li><strong>Stop</strong>: セッション終了時にconsole.log残りチェック</li>
+          </ul>
+        </div>
+        <p>Hooks + Skills + Agents。この3つを組み合わせると、<strong>Claude Codeは完全に自分仕様のAI開発環境</strong>になります。</p>
+      </div>
+    `,
+    leftContent: `
+      <div class="page-number">6</div>
+      <div class="page-body">
+        <p>特にcode-reviewerは<strong>コードを書いた直後に自動で走る</strong>ようにしています。</p>
+        <div class="quote">大事なのは「エージェントに何を任せるか」の設計。漠然と「よろしく」じゃなく、役割・担当範囲・期待する成果物を明確にする。</div>
+      </div>
+    `
+  },
+
+  // 第5章: 実戦のコツ
+  {
+    front: `
+      <div class="page-number">9</div>
+      <div class="chapter-label">第五章</div>
+      <div class="page-title">半年使って<br>わかった「コツ」</div>
+      <div class="divider">&#9671; &#9671; &#9671;</div>
+      <div class="page-body">
+        <p class="dropcap">最後に、毎日Claude Codeを使っている中で体に染みついた実践的なコツを共有します。教科書には書いてない、現場の知恵です。</p>
+        <p><strong>1. 「できない」と言われても諦めない</strong></p>
+        <p>Claudeが「この操作はできません」と言ってきても、実はツールの使い方を十分に調べていないだけのことが多い。「本当に？もう一回ちゃんと調べて」と返すと、別の方法を見つけてくることがある。</p>
+        <p><strong>2. コンテキストウィンドウを意識する</strong></p>
+        <p>長時間のセッションで精度が落ちてきたら、新しいセッションを立ち上げる。コンテキストウィンドウの最後20%は判断力が鈍る。感覚的には<strong>「30分以上同じセッション」は注意信号</strong>。</p>
+      </div>
+      <div class="flip-hint">ドラッグでめくる &#10148;</div>
+    `,
+    back: `
+      <div class="page-number">10</div>
+      <div class="page-body">
+        <p><strong>3. 外部送信は必ず2段階承認</strong></p>
+        <p>メール送信、SNS投稿、Slack──これらは<strong>必ず中身を見せてもらってからOKを出す</strong>。「お願い」「進めて」は承認ワードに入れない。この設計で何度も事故を防げました。</p>
+        <p><strong>4. 並列で回せるものは全部並列</strong></p>
+        <p>サブエージェントでもBashコマンドでも、依存関係がなければ同時に走らせる。待ち時間がゼロになる快感は一度味わうと戻れません。</p>
+        <p><strong>5. 失敗をメモリに刻む</strong></p>
+        <p>「この失敗はメモリに記録して」と伝えるだけ。次回から同じミスをしなくなる。<strong>人間が教育するAI</strong>という感覚。</p>
+        <div class="divider">&#9671; &ensp; &#9671; &ensp; &#9671;</div>
+        <p style="text-align:center;color:#D97B2F;font-size:14px;font-weight:700;letter-spacing:2px;">AIは「使う」ものじゃない。<br>「一緒に働く」ものだ。</p>
+        <div class="divider">── FIN ──</div>
+      </div>
+    `,
+    leftContent: `
+      <div class="page-number">8</div>
+      <div class="page-body">
+        <p>Hooks + Skills + Agents。この3つを組み合わせると、<strong>Claude Codeは完全に自分仕様のAI開発環境</strong>になります。</p>
+        <div class="tip-box">
+          <div class="tip-title">おすすめHook設定</div>
+          <ul>
+            <li><strong>PostToolUse</strong>: 編集後にlint/format自動実行</li>
+            <li><strong>PreToolUse</strong>: push前にレビュー画面</li>
+            <li><strong>Stop</strong>: セッション終了時チェック</li>
+          </ul>
+        </div>
+      </div>
+    `
+  }
+];
+
+let currentPage = 0;
+const book = document.getElementById('book');
+const leftPage = document.getElementById('leftPage');
+const indicator = document.getElementById('indicator');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// ── Audio ──
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playFlipSound() {
+  const bufLen = audioCtx.sampleRate * 0.25;
+  const buf = audioCtx.createBuffer(1, bufLen, audioCtx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 3) * 0.35;
+  }
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buf;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(3000, audioCtx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+  filter.Q.value = 0.8;
+  const g1 = audioCtx.createGain();
+  g1.gain.setValueAtTime(0.4, audioCtx.currentTime);
+  g1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+  noise.connect(filter); filter.connect(g1); g1.connect(audioCtx.destination);
+  noise.start(); noise.stop(audioCtx.currentTime + 0.25);
+
+  const osc = audioCtx.createOscillator();
+  osc.frequency.setValueAtTime(120, audioCtx.currentTime + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.2);
+  osc.type = 'sine';
+  const g2 = audioCtx.createGain();
+  g2.gain.setValueAtTime(0, audioCtx.currentTime);
+  g2.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.09);
+  g2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+  osc.connect(g2); g2.connect(audioCtx.destination);
+  osc.start(audioCtx.currentTime + 0.08); osc.stop(audioCtx.currentTime + 0.25);
+}
+
+function playSoftRustle(intensity) {
+  const len = audioCtx.sampleRate * 0.08;
+  const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2) * 0.08 * intensity;
+  const s = audioCtx.createBufferSource(); s.buffer = buf;
+  const f = audioCtx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2000;
+  const g = audioCtx.createGain(); g.gain.value = 0.3;
+  s.connect(f); f.connect(g); g.connect(audioCtx.destination);
+  s.start(); s.stop(audioCtx.currentTime + 0.08);
+}
+
+// ── Build pages ──
+function buildPages() {
+  pages.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'page';
+    div.dataset.index = i;
+    div.style.zIndex = pages.length - i;
+    div.innerHTML = '<div class="front">'+p.front+'</div><div class="back">'+p.back+'</div>';
+    book.appendChild(div);
+  });
+}
+
+// ── Drag-to-flip state ──
+let isDragging = false;
+let dragPage = null;        // the DOM element being dragged
+let dragDirection = null;   // 'next' or 'prev'
+let dragStartX = 0;
+let dragCurrentAngle = 0;   // 0 = flat, -180 = fully flipped
+let lastRustleAngle = 0;
+let bookRect = null;
+
+function getPageElements() {
+  return Array.from(book.querySelectorAll('.page'));
+}
+
+function updateView(skipTransition) {
+  const allPages = getPageElements();
+  allPages.forEach((p, i) => {
+    if (p === dragPage) return; // don't touch the page being dragged
+    p.classList.remove('dragging', 'snap-back', 'snap-complete');
+    if (!skipTransition) p.style.transition = '';
+    p.style.transform = '';
+    if (i < currentPage) {
+      p.classList.add('flipped');
+      p.style.zIndex = i;
+    } else {
+      p.classList.remove('flipped');
+      p.style.zIndex = pages.length - i;
+    }
+  });
+
+  if (currentPage > 0 && currentPage <= pages.length) {
+    leftPage.innerHTML = '<div style="padding:44px 40px;height:100%;display:flex;flex-direction:column;">'+
+      (pages[currentPage-1].leftContent || pages[currentPage-1].back)+'</div>';
+    leftPage.style.background = 'linear-gradient(225deg, #fefcf7 0%, #f5f0e8 100%)';
+  } else {
+    leftPage.innerHTML = '<div class="cover-left" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div class="spine-text">{{BOOK_TITLE}}</div></div>';
+    leftPage.style.background = 'linear-gradient(to right, #1e1828, #1a1520)';
+  }
+
+  if (currentPage === 0) indicator.textContent = '表紙';
+  else if (currentPage >= pages.length) indicator.textContent = '了';
+  else indicator.textContent = (currentPage*2-1) + ' ─ ' + (currentPage*2);
+
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = currentPage >= pages.length;
+}
+
+// ── Mouse / Touch handlers ──
+function onDragStart(e) {
+  if (isDragging) return;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  bookRect = book.getBoundingClientRect();
+  const bookCenterX = bookRect.left + bookRect.width / 2;
+
+  // Determine direction: click on right half = next, left half = prev
+  if (clientX >= bookCenterX) {
+    // Flip forward
+    if (currentPage >= pages.length) return;
+    const allPages = getPageElements();
+    dragPage = allPages[currentPage];
+    dragDirection = 'next';
+  } else {
+    // Flip backward
+    if (currentPage <= 0) return;
+    const allPages = getPageElements();
+    dragPage = allPages[currentPage - 1];
+    dragDirection = 'prev';
+  }
+
+  isDragging = true;
+  dragStartX = clientX;
+  dragCurrentAngle = dragDirection === 'next' ? 0 : -180;
+  lastRustleAngle = dragCurrentAngle;
+
+  dragPage.classList.add('dragging');
+  dragPage.classList.remove('flipped', 'snap-back', 'snap-complete');
+  dragPage.style.zIndex = pages.length + 1;
+  dragPage.style.transform = `rotateY(${dragCurrentAngle}deg)`;
+
+  e.preventDefault();
+}
+
+function onDragMove(e) {
+  if (!isDragging || !dragPage) return;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const dx = clientX - dragStartX;
+  const halfWidth = bookRect.width / 2;
+
+  if (dragDirection === 'next') {
+    // drag left → angle goes from 0 to -180
+    const progress = Math.max(0, Math.min(1, -dx / halfWidth));
+    dragCurrentAngle = -progress * 180;
+  } else {
+    // drag right → angle goes from -180 to 0
+    const progress = Math.max(0, Math.min(1, dx / halfWidth));
+    dragCurrentAngle = -180 + progress * 180;
+  }
+
+  dragPage.style.transform = `rotateY(${dragCurrentAngle}deg)`;
+
+  // Soft rustle sound every ~30 degrees of movement
+  if (Math.abs(dragCurrentAngle - lastRustleAngle) > 30) {
+    const intensity = Math.min(1, Math.abs(dragCurrentAngle - lastRustleAngle) / 60);
+    playSoftRustle(intensity);
+    lastRustleAngle = dragCurrentAngle;
+  }
+
+  // Dynamic shadow on spine based on angle
+  const absAngle = Math.abs(dragCurrentAngle);
+  const shadowIntensity = 0.15 + (absAngle > 90 ? (180 - absAngle) / 90 : absAngle / 90) * 0.25;
+  book.style.setProperty('--spine-shadow', shadowIntensity);
+
+  e.preventDefault();
+}
+
+function onDragEnd(e) {
+  if (!isDragging || !dragPage) return;
+  isDragging = false;
+
+  const absAngle = Math.abs(dragCurrentAngle);
+  const threshold = 50; // degrees needed to commit the flip
+
+  if (dragDirection === 'next') {
+    if (absAngle > threshold) {
+      // Complete the flip
+      dragPage.classList.remove('dragging');
+      dragPage.classList.add('snap-complete');
+      dragPage.style.transform = 'rotateY(-180deg)';
+      playFlipSound();
+      currentPage++;
+
+      dragPage.addEventListener('transitionend', function handler() {
+        dragPage.removeEventListener('transitionend', handler);
+        dragPage.classList.remove('snap-complete');
+        dragPage.classList.add('flipped');
+        dragPage.style.zIndex = currentPage - 1;
+        dragPage = null;
+        updateView();
+      });
+    } else {
+      // Snap back
+      dragPage.classList.remove('dragging');
+      dragPage.classList.add('snap-back');
+      dragPage.style.transform = 'rotateY(0deg)';
+      dragPage.addEventListener('transitionend', function handler() {
+        dragPage.removeEventListener('transitionend', handler);
+        dragPage.classList.remove('snap-back');
+        dragPage.style.zIndex = pages.length - currentPage;
+        dragPage = null;
+        updateView();
+      });
+    }
+  } else {
+    // prev direction
+    if (absAngle < (180 - threshold)) {
+      // Complete the flip back
+      dragPage.classList.remove('dragging');
+      dragPage.classList.add('snap-complete');
+      dragPage.style.transform = 'rotateY(0deg)';
+      playFlipSound();
+      currentPage--;
+
+      dragPage.addEventListener('transitionend', function handler() {
+        dragPage.removeEventListener('transitionend', handler);
+        dragPage.classList.remove('snap-complete', 'flipped');
+        dragPage.style.zIndex = pages.length - currentPage;
+        dragPage = null;
+        updateView();
+      });
+    } else {
+      // Snap back to flipped
+      dragPage.classList.remove('dragging');
+      dragPage.classList.add('snap-back');
+      dragPage.style.transform = 'rotateY(-180deg)';
+      dragPage.addEventListener('transitionend', function handler() {
+        dragPage.removeEventListener('transitionend', handler);
+        dragPage.classList.remove('snap-back');
+        dragPage.classList.add('flipped');
+        dragPage.style.zIndex = currentPage - 1;
+        dragPage = null;
+        updateView();
+      });
+    }
+  }
+}
+
+// Attach events to book area
+book.addEventListener('mousedown', onDragStart);
+document.addEventListener('mousemove', onDragMove);
+document.addEventListener('mouseup', onDragEnd);
+book.addEventListener('touchstart', onDragStart, { passive: false });
+document.addEventListener('touchmove', onDragMove, { passive: false });
+document.addEventListener('touchend', onDragEnd);
+
+// Button fallbacks
+function nextPage() {
+  if (isDragging || currentPage >= pages.length) return;
+  const allPages = getPageElements();
+  const pg = allPages[currentPage];
+  pg.classList.add('snap-complete');
+  pg.style.zIndex = pages.length + 1;
+  pg.style.transform = 'rotateY(-180deg)';
+  playFlipSound();
+  currentPage++;
+  pg.addEventListener('transitionend', function handler() {
+    pg.removeEventListener('transitionend', handler);
+    pg.classList.remove('snap-complete');
+    pg.classList.add('flipped');
+    updateView();
+  });
+}
+
+function prevPage() {
+  if (isDragging || currentPage <= 0) return;
+  const allPages = getPageElements();
+  const pg = allPages[currentPage - 1];
+  pg.classList.remove('flipped');
+  pg.classList.add('snap-complete');
+  pg.style.zIndex = pages.length + 1;
+  pg.style.transform = 'rotateY(0deg)';
+  playFlipSound();
+  currentPage--;
+  pg.addEventListener('transitionend', function handler() {
+    pg.removeEventListener('transitionend', handler);
+    pg.classList.remove('snap-complete');
+    updateView();
+  });
+}
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextPage(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
+});
+
+// Prevent text selection while dragging
+book.addEventListener('selectstart', (e) => e.preventDefault());
+
+buildPages();
+updateView();
+</script>
+</body>
+</html>

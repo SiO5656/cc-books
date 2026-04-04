@@ -1,113 +1,146 @@
 # FlipBook UI
 
-A realistic page-flipping book UI for the web. Single HTML file, zero dependencies.
+Turn your daily Claude Code sessions into a beautiful, page-flipping book you can browse in your browser.
 
 <p align="center">
   <img src="./assets/demo.gif" alt="FlipBook UI Demo" width="700">
 </p>
 
-## Features
+## What is this?
 
-- **Drag to flip** - Mouse drag with real-time page following. Stop mid-flip, release to complete or snap back
-- **Page flip sound** - Synthesized paper sounds using Web Audio API (no audio files needed)
-- **3D perspective** - CSS 3D transforms with realistic spine shadow and page curl
-- **Responsive** - Keyboard (arrow keys, space) and button navigation also supported
-- **Touch support** - Works on mobile with touch drag
-- **Zero dependencies** - Single HTML file, no build step, no libraries
+A Claude Code skill that automatically reads your session logs and generates a physical-feeling book with:
+
+- **Drag to flip pages** — grab and pull with your mouse, stop mid-flip
+- **Paper sound effects** — synthesized with Web Audio API, no audio files
+- **3D perspective** — CSS transforms with spine shadow and page curl
+- **Touch support** — works on mobile too
+
+Zero dependencies. Single HTML file output. No build step.
 
 ## Quick Start
 
-```bash
-# Just open it
-open index.html
+### 1. Install the skill
 
-# Or serve it
-npx serve .
+```bash
+cp -r skill/ ~/.claude/skills/daily-flipbook/
 ```
 
-## Usage
+### 2. Run it in Claude Code
 
-### Basic
+```
+/daily-flipbook
+```
 
-Drop `index.html` into your project and open it in a browser. That's it.
+Or just say: **「今日の振り返り本を作って」**
 
-### Customize Content
+### 3. Open the book
 
-Edit the `pages` array in the `<script>` section:
+The skill generates an HTML file and opens it in your browser. That's it.
+
+## How It Works
+
+```
+Session Logs (JSONL)
+  ↓  extract user messages + tool usage
+Structured Summary
+  ↓  generate chapters from sessions
+template.html + pages data
+  ↓  merge
+/tmp/claude/daily-flipbook/YYYY-MM-DD.html
+  ↓
+Open in browser 📖
+```
+
+The skill reads from both Claude Code log paths:
+- `~/.claude/projects/` (default)
+- `~/claude-data/projects/` (when `CLAUDE_CONFIG_DIR` is set)
+
+## Standalone Usage
+
+Don't use Claude Code? You can use the HTML template directly:
+
+```bash
+# Just open the demo
+open index.html
+```
+
+Edit the `pages` array in `<script>` to customize content:
 
 ```javascript
 const pages = [
   {
-    front: `<div class="page-title">My Title</div>
-            <div class="page-body"><p>Front side content</p></div>`,
-    back:  `<div class="page-body"><p>Back side content</p></div>`,
-    leftContent: `<div class="page-body"><p>Shown on left when this page is flipped</p></div>`
+    front: `<div class="page-title">Chapter Title</div>
+            <div class="page-body"><p>Content here</p></div>`,
+    back:  `<div class="page-body"><p>Back of page</p></div>`,
+    leftContent: `<p>Shown on left page</p>`
   },
-  // ... more pages
 ];
 ```
 
-### Available CSS Classes
+## Available CSS Classes
 
 | Class | Usage |
 |-------|-------|
 | `.page-title` | Large heading |
-| `.page-body` | Body text container |
-| `.chapter-label` | Small chapter indicator |
-| `.page-number` | Page number |
-| `.divider` | Decorative divider |
-| `.quote` | Blockquote with left border |
-| `.code-block` | Dark code snippet block |
-| `.tip-box` | Highlighted tip/info box |
-| `.comparison` | Side-by-side comparison grid |
+| `.chapter-label` | Small chapter indicator (e.g., "第一章") |
+| `.page-body` | Body text |
+| `.code-block` | Dark code block (`.comment` `.keyword` `.string` `.property`) |
+| `.quote` | Blockquote with accent border |
+| `.tip-box` | Info box (`.tip-title` + `<ul>`) |
+| `.comparison` | 2-column compare (`.col.good` / `.col.bad`) |
+| `.divider` | Decorative separator |
+| `.dropcap` | Drop cap first letter |
 | `.cover-front` | Book cover styling |
-| `.dropcap` | First letter drop cap (add to `<p>`) |
 
-### Interaction
+## Controls
 
 | Action | Effect |
 |--------|--------|
-| Drag right page left | Flip to next page |
-| Drag left page right | Flip to previous page |
-| Release past 50° | Complete the flip |
+| Drag right half ← | Next page |
+| Drag left half → | Previous page |
+| Release past 50° | Complete flip |
 | Release before 50° | Snap back |
-| Arrow keys / Space | Navigate pages |
-| Buttons | Navigate pages |
+| `←` `→` `Space` | Keyboard nav |
 
 ## Customization
 
-### Colors
-
-The default theme uses warm book tones. Override the CSS variables:
+### Theme
 
 ```css
 /* Cover */
 .cover-front { background: linear-gradient(145deg, #1a1520, #2a1f30); }
-
+/* Accent */
+.chapter-label { color: #D97B2F; }
 /* Pages */
 .page .front { background: linear-gradient(135deg, #fefcf7, #f5f0e8); }
-
-/* Accent color */
-.chapter-label { color: #D97B2F; }
 ```
 
-### Sound
-
-Adjust volume in `playFlipSound()` and `playSoftRustle()`:
+### Sound Volume
 
 ```javascript
-// Main flip sound volume
-g1.gain.setValueAtTime(0.4, ...);  // 0.0 - 1.0
+// In playFlipSound(): main flip
+g1.gain.setValueAtTime(0.4, ...);  // 0 to disable
 
-// Rustle during drag
-g.gain.value = 0.3;  // 0.0 - 1.0
+// In playSoftRustle(): drag rustle
+g.gain.value = 0.3;
 ```
 
-Set to `0` to disable sounds.
+## Project Structure
+
+```
+flipbook-ui/
+├── index.html          # Standalone demo (works without Claude Code)
+├── skill/
+│   ├── SKILL.md        # Claude Code skill definition
+│   ├── template.html   # HTML template with {{BOOK_TITLE}} / {{PAGES_DATA}} placeholders
+│   └── generate.sh     # Session log collector script
+├── LICENSE             # MIT
+└── README.md
+```
 
 ## Browser Support
 
-Chrome, Firefox, Safari, Edge (all modern versions). Requires CSS 3D transforms and Web Audio API.
+Chrome, Firefox, Safari, Edge. Requires CSS 3D Transforms + Web Audio API.
 
 ## License
 
