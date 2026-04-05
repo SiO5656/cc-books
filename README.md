@@ -44,6 +44,22 @@ Claude Codeで:
 
 出力先: `/tmp/claude/daily-flipbook/YYYY-MM-DD.html`
 
+### 自動生成（毎日勝手に貯まる）
+
+毎日23:55に自動でその日の本を生成するcronを設定できます:
+
+```bash
+# macOS (launchd)
+cp skill/com.cc-books.daily.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.cc-books.daily.plist
+
+# Linux (cron)
+crontab -e
+# 55 23 * * * /path/to/cc-books/skill/daily-cron.sh
+```
+
+セッションがあった日だけ本が生成されます。既に生成済みの日はスキップ。
+
 ## 使い方（Claude Codeなし）
 
 `index.html` をブラウザで開くだけでデモが見れます。コンテンツを変えたい場合は `pages` 配列を編集:
