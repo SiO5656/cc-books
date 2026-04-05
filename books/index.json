@@ -1,0 +1,260 @@
+[
+  {
+    "id": "0405",
+    "title": "2026年4月5日",
+    "date": "2026-04-05",
+    "day": "土",
+    "sessions": 9,
+    "color": 0,
+    "chapters": [
+      "ブラウザでFPSを作ってみた",
+      "Claude Code環境を可視化したい",
+      "FlipBook UIを作ってOSS化した",
+      "VPS設定の確認と振り返り"
+    ],
+    "file": true,
+    "hasPages": true
+  },
+  {
+    "id": "0404",
+    "title": "2026年4月4日",
+    "date": "2026-04-04",
+    "day": "金",
+    "sessions": 25,
+    "color": 1,
+    "chapters": [
+      "OSS公開を真剣に検討した日",
+      "新しい書籍企画が2本同時に",
+      "Gemma 4をローカルで動かしてみた",
+      "25セッションの金曜日"
+    ],
+    "file": true,
+    "hasPages": true
+  },
+  {
+    "id": "gemma4",
+    "title": "Gemma 4",
+    "date": "2026-04-05",
+    "day": "技術書",
+    "sessions": 7,
+    "color": 3,
+    "chapters": [
+      "Overview",
+      "4モデル構成",
+      "MoEアーキテクチャ",
+      "ベンチマーク",
+      "Apache 2.0ライセンス",
+      "活用シーン",
+      "まとめ"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0403",
+    "title": "2026年4月3日",
+    "date": "2026-04-03",
+    "day": "木",
+    "sessions": 5,
+    "color": 2,
+    "chapters": [
+      "大和書房MTG振り返り",
+      "書籍構成案ブレスト",
+      "AI顧問レポート作成",
+      "Slack Bot改修"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0402",
+    "title": "2026年4月2日",
+    "date": "2026-04-02",
+    "day": "水",
+    "sessions": 11,
+    "color": 3,
+    "chapters": [
+      "天秤AI記事3本納品",
+      "MCP新規サーバー構築",
+      "メモリシステム蒸留",
+      "Discord Digest自動化",
+      "請求書バッチ生成"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0401",
+    "title": "2026年4月1日",
+    "date": "2026-04-01",
+    "day": "火",
+    "sessions": 6,
+    "color": 4,
+    "chapters": [
+      "新年度キックオフ",
+      "メンバー1on1準備",
+      "研修資料更新",
+      "note自動出稿テスト"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0331",
+    "title": "2026年3月31日",
+    "date": "2026-03-31",
+    "day": "月",
+    "sessions": 8,
+    "color": 5,
+    "chapters": [
+      "月末レポート作成",
+      "X投稿パイプライン改善",
+      "請求書発行",
+      "VPSセキュリティ監査"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0330",
+    "title": "2026年3月30日",
+    "date": "2026-03-30",
+    "day": "日",
+    "sessions": 4,
+    "color": 6,
+    "chapters": [
+      "LP改修",
+      "ConoHaデプロイ自動化",
+      "競合分析まとめ"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0329",
+    "title": "2026年3月29日",
+    "date": "2026-03-29",
+    "day": "土",
+    "sessions": 6,
+    "color": 7,
+    "chapters": [
+      "バズ投稿分析200件",
+      "suguru-voice構文研究",
+      "Typefully CLI改修",
+      "動画→スレッド自動化"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0328",
+    "title": "2026年3月28日",
+    "date": "2026-03-28",
+    "day": "金",
+    "sessions": 9,
+    "color": 8,
+    "chapters": [
+      "連載執筆",
+      "記事下書き",
+      "研修スライド更新",
+      "Notion DB整理",
+      "Linear自動タスク検出"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0327",
+    "title": "2026年3月27日",
+    "date": "2026-03-27",
+    "day": "木",
+    "sessions": 7,
+    "color": 9,
+    "chapters": [
+      "研修準備",
+      "プロンプト集更新",
+      "Midjourney連携テスト",
+      "コミュニティ配信準備"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0326",
+    "title": "2026年3月26日",
+    "date": "2026-03-26",
+    "day": "水",
+    "sessions": 5,
+    "color": 10,
+    "chapters": [
+      "教育機関フォローアップ",
+      "助成金書類レビュー",
+      "Peatixイベント作成"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0325",
+    "title": "2026年3月25日",
+    "date": "2026-03-25",
+    "day": "火",
+    "sessions": 10,
+    "color": 11,
+    "chapters": [
+      "Claude Codeメモリv2設計",
+      "蒸留プロセス実装",
+      "feedbackカテゴリ整理",
+      "MEMORY.md自動更新"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0324",
+    "title": "2026年3月24日",
+    "date": "2026-03-24",
+    "day": "月",
+    "sessions": 6,
+    "color": 12,
+    "chapters": [
+      "週次レポート生成",
+      "Slack通知整理",
+      "tldv議事録処理",
+      "パートナー管理更新"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0323",
+    "title": "2026年3月23日",
+    "date": "2026-03-23",
+    "day": "日",
+    "sessions": 3,
+    "color": 13,
+    "chapters": [
+      "事業MTG",
+      "収益分配設計",
+      "価格戦略ブレスト"
+    ],
+    "file": false,
+    "hasPages": false
+  },
+  {
+    "id": "0322",
+    "title": "2026年3月22日",
+    "date": "2026-03-22",
+    "day": "土",
+    "sessions": 8,
+    "color": 14,
+    "chapters": [
+      "X口調プロファイル分析",
+      "3,900メッセージ解析",
+      "voice profile作成",
+      "バズ構文テンプレート化"
+    ],
+    "file": false,
+    "hasPages": false
+  }
+]

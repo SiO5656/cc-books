@@ -1,0 +1,15 @@
+{
+  "id": "0330",
+  "file": false,
+  "title": "2026年3月30日",
+  "date": "2026-03-30",
+  "day": "日",
+  "sessions": 4,
+  "color": 6,
+  "chapters": [
+    "LP改修",
+    "ConoHaデプロイ自動化",
+    "競合分析まとめ"
+  ],
+  "pages": []
+}

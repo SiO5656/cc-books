@@ -1,0 +1,32 @@
+{
+  "id": "0405",
+  "file": true,
+  "title": "2026年4月5日",
+  "date": "2026-04-05",
+  "day": "土",
+  "sessions": 9,
+  "color": 0,
+  "chapters": [
+    "ブラウザでFPSを作ってみた",
+    "Claude Code環境を可視化したい",
+    "FlipBook UIを作ってOSS化した",
+    "VPS設定の確認と振り返り"
+  ],
+  "pages": [
+    {
+      "front": "<div class=\"cover-front\" style=\"background:linear-gradient(145deg,#1a1520,#2a1f30,#1e1828,#0f0d14);\"><div class=\"cover-ornament\">&#9671; &#9671; &#9671;</div><div style=\"font-size:13px;color:#8a7050;letter-spacing:4px;margin-bottom:12px;\">DAILY FLIPBOOK</div><div class=\"cover-title\">2026年4月5日</div><div class=\"cover-subtitle\">── Today I Learned ──</div><div style=\"width:80px;height:1px;background:linear-gradient(to right,transparent,#D97B2F,transparent);margin:24px 0;\"></div><div style=\"color:#b89868;font-size:13px;letter-spacing:2px;\">9 sessions / Saturday</div><div class=\"cover-ornament\">&#9671; &#9671; &#9671;</div></div>",
+      "back": "<div class=\"page-number\">ii</div><div style=\"flex:1;display:flex;flex-direction:column;justify-content:center;\"><p style=\"color:#8a7a68;font-size:14px;letter-spacing:3px;margin-bottom:16px;text-align:center;\">今日のサマリー</p><div class=\"divider\" style=\"margin:10px 0;\">─</div><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">今日は盛りだくさんだった。FPSゲームを作ったり、Claude Codeの環境を可視化するダッシュボードを構想したり。</p><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">中でも一番の成果は<strong>FlipBook UI</strong>。ドラッグでめくれる本のUIを作り、OSSとしてGitHubに公開するところまでいった。</p></div>",
+      "leftContent": "<div class=\"cover-left\" style=\"background:linear-gradient(225deg,#fefcf7 0%,#f5f0e8 100%);\"><div class=\"spine-text\">2026年4月5日の記録</div></div>"
+    },
+    {
+      "front": "<div class=\"page-number\">1</div><div class=\"chapter-label\">第一章</div><div class=\"page-title\">ブラウザでFPSを<br>作ってみた</div><div class=\"divider\">&#9671; &#9671; &#9671;</div><div class=\"page-body\"><p class=\"dropcap\">朝イチのセッションで「FPS作ってみて！」と指示を出した。フロントエンドデザインスキルを使って、ブラウザ上で動くFPSゲームが生成された。</p><p>最初のバージョンは暗すぎたので「もっとリアルにして、あと暗すぎる」とフィードバック。</p><div class=\"quote\">「すごいエネ！」って思わず言ったくらい、AIのコード生成がエグいレベルになってる。</div></div><div class=\"flip-hint\">ドラッグでめくる &#10148;</div>",
+      "back": "<div class=\"page-number\">2</div><div class=\"page-body\"><p>ゲーム自体は遊ぶことが目的じゃなくて、<strong>「Claude Codeでどこまで作れるか」を見たかった</strong>のが本音。</p><div class=\"tip-box\"><div class=\"tip-title\">学び</div><ul><li>最初の出力で完璧を求めない。まず出して、フィードバックで磨く</li><li>感覚的フィードバックも、AIはちゃんと汲み取る</li><li>ブラウザ技術だけでかなりリッチなものが作れる</li></ul></div></div>",
+      "leftContent": "<div class=\"page-number\">ii</div><div style=\"flex:1;display:flex;flex-direction:column;justify-content:center;\"><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">中でも一番の成果は<strong>FlipBook UI</strong>。OSSとしてGitHubに公開するところまでいった。</p></div>"
+    },
+    {
+      "front": "<div class=\"page-number\">3</div><div class=\"chapter-label\">第二章</div><div class=\"page-title\">FlipBook UIを<br>作ってOSS化した</div><div class=\"divider\">&#9671; &#9671; &#9671;</div><div class=\"page-body\"><p class=\"dropcap\">今日のメインイベント。「本ペラペラめくるUI作れる？」から始まって、最終的にGitHubにOSSとして公開するところまでいった。</p><div class=\"timeline-item\">CSS 3D transformsでページめくりの基本実装</div><div class=\"timeline-item\">コンテンツを日本語に、サイズを大きく調整</div><div class=\"timeline-item\">Web Audio APIでめくり音を合成</div><div class=\"timeline-item\">マウスドラッグで途中停止できる操作を実装</div><div class=\"timeline-item\">OSSとしてGitHub publicに公開</div></div><div class=\"flip-hint\">ドラッグでめくる &#10148;</div>",
+      "back": "<div class=\"page-number\">4</div><div class=\"page-body\"><p>特に面白かったのが<strong>ドラッグめくり</strong>の実装。50度を超えたら完了、それ以下ならバネで戻す。</p><div class=\"code-block\"><div class=\"code-label\">核心部分</div><span class=\"keyword\">if</span> (absAngle > threshold) {\n  <span class=\"comment\">// 50度超え → めくり完了</span>\n  <span class=\"property\">playFlipSound</span>();\n} <span class=\"keyword\">else</span> {\n  <span class=\"comment\">// バネで戻る</span>\n}</div><p>さらに<code>/daily-flipbook</code>スキルを作成。セッションログから自動で本を生成する仕組み。</p><div class=\"divider\">&#9671; &ensp; &#9671; &ensp; &#9671;</div><p style=\"text-align:center;color:#D97B2F;font-size:14px;font-weight:700;\">AIは「使う」ものじゃない。<br>「一緒に働く」ものだ。</p><div class=\"divider\">── FIN ──</div></div>",
+      "leftContent": "<div class=\"page-number\">2</div><div class=\"page-body\"><div class=\"tip-box\"><div class=\"tip-title\">学び</div><ul><li>最初の出力で完璧を求めない</li><li>感覚的フィードバックもAIは汲み取る</li><li>ブラウザ技術だけでリッチなものが作れる</li></ul></div></div>"
+    }
+  ]
+}

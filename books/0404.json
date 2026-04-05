@@ -1,0 +1,32 @@
+{
+  "id": "0404",
+  "file": true,
+  "title": "2026年4月4日",
+  "date": "2026-04-04",
+  "day": "金",
+  "sessions": 25,
+  "color": 1,
+  "chapters": [
+    "OSS公開を真剣に検討した日",
+    "新しい書籍企画が2本同時に",
+    "Gemma 4をローカルで動かしてみた",
+    "25セッションの金曜日"
+  ],
+  "pages": [
+    {
+      "front": "<div class=\"cover-front\" style=\"background:linear-gradient(145deg,#1a2030,#1e2a40,#162038,#0f1520);\"><div class=\"cover-ornament\">&#9671; &#9671; &#9671;</div><div style=\"font-size:13px;color:#5888b0;letter-spacing:4px;margin-bottom:12px;\">DAILY FLIPBOOK</div><div class=\"cover-title\" style=\"color:#8ab8e0;\">2026年4月4日</div><div class=\"cover-subtitle\" style=\"color:#6090b0;\">── Today I Learned ──</div><div style=\"width:80px;height:1px;background:linear-gradient(to right,transparent,#5888b0,transparent);margin:24px 0;\"></div><div style=\"color:#6090b0;font-size:13px;letter-spacing:2px;\">25 sessions / Friday</div><div class=\"cover-ornament\" style=\"color:#5888b0;\">&#9671; &#9671; &#9671;</div></div>",
+      "back": "<div class=\"page-number\">ii</div><div style=\"flex:1;display:flex;flex-direction:column;justify-content:center;\"><p style=\"color:#8a7a68;font-size:14px;letter-spacing:3px;margin-bottom:16px;text-align:center;\">今日のサマリー</p><div class=\"divider\" style=\"margin:10px 0;\">─</div><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">圧倒的な量のセッションをこなした1日。OSS公開の検討、新しい書籍企画2本、Gemma 4のローカル導入まで。</p><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">この日のキーワードは<strong>「全部やる」</strong>。</p></div>",
+      "leftContent": "<div class=\"cover-left\" style=\"background:linear-gradient(225deg,#fefcf7 0%,#f5f0e8 100%);\"><div class=\"spine-text\">2026年4月4日の記録</div></div>"
+    },
+    {
+      "front": "<div class=\"page-number\">1</div><div class=\"chapter-label\">第一章</div><div class=\"page-title\">OSS公開を<br>真剣に検討した日</div><div class=\"divider\">&#9671; &#9671; &#9671;</div><div class=\"page-body\"><p class=\"dropcap\">「これ、普通にOSSで公開しようかと思ってた」── 自分が作ったツールを世に出す決断。何度もセッションを重ねて確認した。</p><div class=\"quote\">OSSにするかどうかの判断基準は「自分が欲しかったものを、他の人も欲しがるか」。答えがYesなら出す。</div></div><div class=\"flip-hint\">ドラッグでめくる &#10148;</div>",
+      "back": "<div class=\"page-number\">2</div><div class=\"page-body\"><p>結局この日は検討で終わって、翌日（4/5）に実際に公開した。<strong>1日寝かせて判断する</strong>のは大事。</p><div class=\"tip-box\"><div class=\"tip-title\">OSSチェックリスト</div><ul><li>機密情報が含まれていないか</li><li>READMEは初見の人が理解できるか</li><li>ライセンスは明示されているか</li><li>依存関係が少ないか</li></ul></div></div>",
+      "leftContent": "<div class=\"page-number\">ii</div><div style=\"flex:1;display:flex;flex-direction:column;justify-content:center;\"><p style=\"color:#4a4038;font-size:15px;line-height:2.1;\">この日のキーワードは<strong>「全部やる」</strong>。25セッション。</p></div>"
+    },
+    {
+      "front": "<div class=\"page-number\">3</div><div class=\"chapter-label\">第二章</div><div class=\"page-title\">Gemma 4を<br>ローカルで動かした</div><div class=\"divider\">&#9671; &#9671; &#9671;</div><div class=\"page-body\"><p class=\"dropcap\">「Gemma 4ってこのMacで動けそうな頭いいやつどれ？」── ローカルLLMへの興味が爆発した瞬間。</p><div class=\"code-block\"><span class=\"keyword\">ollama</span> pull gemma4:27b\n<span class=\"keyword\">ollama</span> pull gemma4:12b\n<span class=\"keyword\">ollama</span> run gemma4:27b <span class=\"string\">\"Hello\"</span></div><p>プライバシーが気になるデータの処理や、ネットがない環境での作業には十分使える。</p></div><div class=\"flip-hint\">ドラッグでめくる &#10148;</div>",
+      "back": "<div class=\"page-number\">4</div><div class=\"page-body\"><div class=\"tip-box\"><div class=\"tip-title\">今日の学び</div><ul><li>OSS公開は1日寝かせてから判断がいい</li><li>書籍企画はMTG直後にAgent Teamでリサーチ→叩き台30分</li><li>ローカルLLMはプライバシーデータの処理に使える</li><li>25セッション/日は全部意味のある作業だった</li></ul></div><div class=\"divider\">&#9671; &ensp; &#9671; &ensp; &#9671;</div><p style=\"text-align:center;color:#5888b0;font-size:14px;font-weight:700;\">やりたいことが多すぎる日は、<br>AIに任せて全部やる。</p><div class=\"divider\">── FIN ──</div></div>",
+      "leftContent": "<div class=\"page-number\">2</div><div class=\"page-body\"><p>結局この日は検討で終わって、翌日に実際に公開した。<strong>1日寝かせて判断する</strong>のは大事。</p></div>"
+    }
+  ]
+}
